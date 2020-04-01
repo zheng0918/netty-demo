@@ -1,11 +1,15 @@
 package com.netty.demo.fourth;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.CharsetUtil;
 
+import java.nio.charset.CharsetEncoder;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author Zhengx
@@ -14,6 +18,33 @@ import java.util.UUID;
  */
 public class ServerHandler extends ChannelInboundHandlerAdapter {
 
+    /**
+     * 用户自定义任务
+     * @param ctx
+     * @param msg
+     * @throws Exception
+     */
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        //自定义任务
+        ctx.channel().eventLoop().execute(() -> {
+            try{
+                Thread.sleep(5*1000);
+                ctx.writeAndFlush(Unpooled.copiedBuffer("hello", CharsetUtil.UTF_8));
+            }catch (Exception e){
+                System.out.println("发生异常"+e.getMessage());
+            }
+        });
+        //自定义定时任务
+        ctx.channel().eventLoop().schedule(() -> {
+            try{
+                Thread.sleep(5*1000);
+                ctx.writeAndFlush(Unpooled.copiedBuffer("hello", CharsetUtil.UTF_8));
+            }catch (Exception e){
+                System.out.println("发生异常"+e.getMessage());
+            }
+        },5, TimeUnit.SECONDS);
+    }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt){

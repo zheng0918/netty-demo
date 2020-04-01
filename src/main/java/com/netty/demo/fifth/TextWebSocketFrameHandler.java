@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * @Author Zhengx
  * @Date 2019/9/17
- * @Description
+ * @Description TextWebSocketFrame表示一个文本帧
  */
 public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
@@ -34,5 +34,6 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
         System.out.println("发生异常！");
+        ctx.close();
     }
 }

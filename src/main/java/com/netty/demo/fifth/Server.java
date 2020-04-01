@@ -37,7 +37,11 @@ public class Server {
                  ch.pipeline().addLast(new HttpServerCodec());
                  ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
                  ch.pipeline().addLast(new ChunkedWriteHandler());//以块儿的方式写
+                 //http数据在传输过程中是分段的，HttpObjectAggregator是可以将多个短聚合(浏览器发送大量数据时，会发出多次http请求)
                  ch.pipeline().addLast(new HttpObjectAggregator(8192));
+                 //对于websocket，它的数据是以帧(frame)的形式传递的
+                 //浏览器请求时 ws://localhost:7000/xxx
+                 //WebSocketServerProtocolHandler核心功能是将http协议升级为ws协议，保持长连接
                  ch.pipeline().addLast(new WebSocketServerProtocolHandler("/ws"));
                  ch.pipeline().addLast(new TextWebSocketFrameHandler());
                  }
